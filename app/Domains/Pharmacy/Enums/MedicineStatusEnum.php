@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domains\PHarmacy\Enums;
+namespace App\Domains\Pharmacy\Enums;
 
 enum MedicineStatusEnum: string
 {

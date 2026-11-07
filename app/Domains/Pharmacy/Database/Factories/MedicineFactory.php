@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Domains\pharmacy\Database\Factories;
+namespace App\Domains\Pharmacy\Database\Factories;
 
-use App\Domains\PHarmacy\Enums\MedicineStatusEnum;
+use App\Domains\Pharmacy\Enums\MedicineStatusEnum;
 use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Medicine;
 use App\Models\User;
