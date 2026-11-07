@@ -54,4 +54,3 @@ jobs:
           script: |
             cd /var/www/CMS
             ./deploy.sh
-  
