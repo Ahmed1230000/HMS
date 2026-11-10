@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Domains\Hr\Database\Factories\HrFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,6 +27,11 @@ class Hr extends Model
 {
     use HasFactory, SoftDeletes;
 
+
+    protected static function newFactory()
+    {
+        return HrFactory::new();
+    }
     protected $casts = [
         'date_of_birth' => 'date',
         'hire_date'     => 'date',
