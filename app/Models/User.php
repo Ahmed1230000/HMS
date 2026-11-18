@@ -16,6 +16,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Laravel\Fortify\TwoFactorAuthenticatable;
 
 #[Fillable(['name', 'email', 'password'])]
 #[Hidden(['password', 'remember_token'])]
@@ -23,7 +24,13 @@ class User extends Authenticatable implements MustVerifyEmail, CanResetPassword
 {
     /** @use HasFactory<UserFactory> */
 
-    use HasFactory, Notifiable, HasApiTokens, HasRoles, SoftDeletes,PasswordsCanResetPassword;
+    use HasFactory,
+        Notifiable,
+        HasApiTokens,
+        HasRoles,
+        SoftDeletes,
+        PasswordsCanResetPassword,
+        TwoFactorAuthenticatable;
 
     protected $guard_name = 'api';
 

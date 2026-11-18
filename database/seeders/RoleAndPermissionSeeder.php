@@ -22,9 +22,9 @@ class RoleAndPermissionSeeder extends Seeder
      * Modules
      */
     private array $permissions = [
-        'users',
-        'roles',
-        'permissions',
+        'user',
+        'role',
+        'permission',
     ];
 
     /**
@@ -34,13 +34,13 @@ class RoleAndPermissionSeeder extends Seeder
         'super_admin' => ['*'],
 
         'admin' => [
-            'users',
-            'roles',
-            'permissions',
+            'user',
+            'role',
+            'permission',
         ],
 
         'employee' => [
-            'users',
+            'user',
         ],
     ];
 

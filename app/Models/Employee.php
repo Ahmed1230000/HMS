@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Domains\Employee\Database\Factories\EmployeeFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -35,6 +36,10 @@ class Employee extends Model
         'deleted_at'    => 'datetime',
     ];
 
+    protected static function newFactory()
+    {
+        return EmployeeFactory::new();
+    }
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');

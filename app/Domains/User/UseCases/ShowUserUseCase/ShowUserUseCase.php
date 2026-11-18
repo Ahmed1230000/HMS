@@ -5,7 +5,7 @@ namespace App\Domains\User\UseCases\ShowUserUseCase;
 use App\Domains\User\DTOs\User\ShowUserDTO;
 use App\Domains\User\Exceptions\User\UserNotFoundException;
 use App\Domains\User\Repositories\Contracts\User\UserRepositoryInterface;
-
+use App\Models\User;
 
 class ShowUserUseCase
 {
@@ -25,13 +25,13 @@ class ShowUserUseCase
     |--------------------------------------------------------------------------
     */
 
-    public function execute(int $id): ShowUserDTO
+    public function execute(int $id): User
     {
-        $user = $this->repository->findById($id);
+        $user = $this->repository->findModel($id);
 
         if (!$user) {
             throw new UserNotFoundException('User not found.');
         }
-        return ShowUserDTO::fromEntity($user);
+        return $user;
     }
 }

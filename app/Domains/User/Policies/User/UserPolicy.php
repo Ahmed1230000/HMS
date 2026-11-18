@@ -6,20 +6,27 @@ use App\Models\User;
 
 class UserPolicy
 {
+    public function before(User $user, $ability)
+    {
+        if ($user->hasRole('super_admin')) {
+            return true;
+        }
+        return null;
+    }
     /**
      * Determine whether any models can be viewed.
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo('index-user');
     }
 
     /**
      * Determine whether the model can be viewed.
      */
-    public function view(User $user ,User $model): bool
+    public function view(User $user, User $model): bool
     {
-        return true;
+        return $user->id === $model->id && $user->hasPermissionTo('show-user');
     }
 
     /**
@@ -27,7 +34,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo('create-user');
     }
 
     /**
@@ -35,7 +42,7 @@ class UserPolicy
      */
     public function update(User $user, User $model): bool
     {
-        return true;
+        return $user->hasPermissionTo('update-user');
     }
 
     /**
@@ -43,7 +50,7 @@ class UserPolicy
      */
     public function delete(User $user, User $model): bool
     {
-        return true;
+        return $user->hasPermissionTo('delete-user');
     }
 
     /**

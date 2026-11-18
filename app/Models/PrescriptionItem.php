@@ -3,13 +3,15 @@
 namespace App\Models;
 
 use App\Domains\Prescription\Enums\PrescriptionItemStatusEnum;
+use App\Domains\PrescriptionItem\Database\Factories\PrescriptionItemFactory;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class PrescriptionItem extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
 
     protected $fillable = [
         'prescription_id',
@@ -20,6 +22,11 @@ class PrescriptionItem extends Model
         'instructions',
         'status',
     ];
+
+    protected static function newFactory()
+    {
+        return PrescriptionItemFactory::new();
+    }
 
     protected $casts = [
         'status' => PrescriptionItemStatusEnum::class,

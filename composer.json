@@ -11,6 +11,7 @@
     "require": {
         "php": "^8.3",
         "ahmed-ahmed/laravel-ddd": "1.0",
+        "laravel/fortify": "^1.42",
         "laravel/framework": "^13.8",
         "laravel/passport": "^13.0",
         "laravel/tinker": "^3.0",
