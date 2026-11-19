@@ -22,6 +22,6 @@ Route::livewire(
     ->middleware('auth')
     ->name('users.two-factor-authentication');
 
-Route::livewire('/settings/confirm-two-factor-authentication', 'pages::settings.confirm-two-factor-authentication')
+Route::livewire('/users/{id}/confirm-two-factor-authentication', 'pages::settings.confirm-two-factor-authentication')
     ->middleware('auth')
-    ->name('confirm-two-factor-authentication');
+    ->name('users.confirm-two-factor-authentication');

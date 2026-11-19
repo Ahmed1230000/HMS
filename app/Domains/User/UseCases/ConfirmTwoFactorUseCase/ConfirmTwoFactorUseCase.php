@@ -25,9 +25,8 @@ class ConfirmTwoFactorUseCase
     |--------------------------------------------------------------------------
     */
 
-    public function execute(ConfirmTwoFactorDTO $dto)
+    public function execute(User $user, ConfirmTwoFactorDTO $dto)
     {
-        $user = auth()->user();
 
         if (!$user instanceof User) {
             throw new UserNotFoundException('User not found');

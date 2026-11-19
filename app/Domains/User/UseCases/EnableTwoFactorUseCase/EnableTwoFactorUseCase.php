@@ -4,6 +4,7 @@ namespace App\Domains\User\UseCases\EnableTwoFactorUseCase;
 
 use App\Domains\User\Exceptions\User\TwoFactorAuthenticationAlreadyEnabledException;
 use App\Domains\User\Exceptions\User\UserNotFoundException;
+use App\Domains\User\Repositories\Contracts\User\UserRepositoryInterface;
 use App\Models\User;
 use Laravel\Fortify\Actions\EnableTwoFactorAuthentication;
 
@@ -15,7 +16,9 @@ class EnableTwoFactorUseCase
     |--------------------------------------------------------------------------
     */
 
-    public function __construct(private EnableTwoFactorAuthentication $enableTwoFactorAuthentication) {}
+    public function __construct(
+        private EnableTwoFactorAuthentication $enableTwoFactorAuthentication,
+    ) {}
 
     /*
     |--------------------------------------------------------------------------
@@ -23,15 +26,12 @@ class EnableTwoFactorUseCase
     |--------------------------------------------------------------------------
     */
 
-    public function execute(): void
+    public function execute(User $user): void
     {
-        $user = auth()->user();
-        if (!$user instanceof User) {
-            throw new UserNotFoundException('User not found');
-        }
-
         if ($user->hasEnabledTwoFactorAuthentication()) {
-            throw new TwoFactorAuthenticationAlreadyEnabledException('Two-factor authentication is already enabled for this user.');
+            throw new TwoFactorAuthenticationAlreadyEnabledException(
+                'Two-factor authentication is already enabled for this user.'
+            );
         }
 
         $this->enableTwoFactorAuthentication->__invoke($user);

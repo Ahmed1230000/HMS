@@ -8,6 +8,8 @@ class UserPolicy
 {
     public function before(User $user, $ability)
     {
+
+
         if ($user->hasRole('super_admin')) {
             return true;
         }
@@ -34,7 +36,7 @@ class UserPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasPermissionTo('create-user');
+        return $user->hasPermissionTo('store-user');
     }
 
     /**
@@ -53,6 +55,27 @@ class UserPolicy
         return $user->hasPermissionTo('delete-user');
     }
 
+    public function manageRoles(User $user, User $model): bool
+    {
+        return $user->hasPermissionTo('manage-roles');
+    }
+
+    public function managePermissions(User $user, User $model): bool
+    {
+        return $user->hasPermissionTo('manage-permissions');
+    }
+
+
+    public function viewTwoFactor(User $user, User $target): bool
+    {
+        return $user->hasRole('super_admin')
+            || $user->id === $target->id;
+    }
+
+    public function manageTwoFactor(User $user, User $target): bool
+    {
+        return $user->hasRole('super_admin');
+    }
     /**
      * Determine whether the model can be restored.
      */

@@ -7,12 +7,19 @@ use App\Models\Roles;
 
 class RolesPolicy
 {
+    public function before(User $user, $ability)
+    {
+        if ($user->hasRole('super_admin')) {
+            return true;
+        }
+        return null;
+    }
     /**
      * Determine whether any models can be viewed.
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo('index-role');
     }
 
     /**
@@ -20,7 +27,7 @@ class RolesPolicy
      */
     public function view(User $user ,Roles $role): bool
     {
-        return true;
+        return $user->hasPermissionTo('show-role');
     }
 
     /**
@@ -28,7 +35,7 @@ class RolesPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo('store-role');
     }
 
     /**
@@ -36,7 +43,7 @@ class RolesPolicy
      */
     public function update(User $user, Roles $role): bool
     {
-        return true;
+        return $user->hasPermissionTo('update-role');
     }
 
     /**
@@ -44,7 +51,7 @@ class RolesPolicy
      */
     public function delete(User $user, Roles $role): bool
     {
-        return true;
+        return $user->hasPermissionTo('delete-role');
     }
 
     /**

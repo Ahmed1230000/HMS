@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\User;
 use App\Common\Traits\FlashMessageException;
 use App\Domains\User\UseCases\EnableTwoFactorUseCase\EnableTwoFactorUseCase;
 use Livewire\Attributes\Computed;
@@ -11,13 +12,9 @@ new #[Layout('layouts.dashboard')] #[Title('Two-Factor Authentication')] class e
 {
     use FlashMessageException;
 
-    protected EnableTwoFactorUseCase $enableTwoFactorUseCase;
+    public int $userId;
 
-    /*
-    |--------------------------------------------------------------------------
-    | Boot
-    |--------------------------------------------------------------------------
-    */
+    protected EnableTwoFactorUseCase $enableTwoFactorUseCase;
 
     public function boot(
         EnableTwoFactorUseCase $enableTwoFactorUseCase
@@ -25,28 +22,29 @@ new #[Layout('layouts.dashboard')] #[Title('Two-Factor Authentication')] class e
         $this->enableTwoFactorUseCase = $enableTwoFactorUseCase;
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Computed Properties
-    |--------------------------------------------------------------------------
-    */
+    public function mount(int $id): void
+    {
+        $this->userId = $id;
+
+        $this->authorize('viewTwoFactor', $this->targetUser);
+    }
 
     #[Computed]
-    public function user()
+    public function targetUser(): User
     {
-        return auth()->user();
+        return User::findOrFail($this->userId);
     }
 
     #[Computed]
     public function isTwoFactorEnabled(): bool
     {
-        return $this->user->hasEnabledTwoFactorAuthentication();
+        return $this->targetUser->hasEnabledTwoFactorAuthentication();
     }
 
     #[Computed]
     public function isTwoFactorPending(): bool
     {
-        return !empty($this->user->two_factor_secret)
+        return !empty($this->targetUser->two_factor_secret)
             && !$this->isTwoFactorEnabled;
     }
 
@@ -57,23 +55,20 @@ new #[Layout('layouts.dashboard')] #[Title('Two-Factor Authentication')] class e
             return null;
         }
 
-        return $this->user->twoFactorQrCodeSvg();
+        return $this->targetUser->twoFactorQrCodeSvg();
     }
-
-    /*
-    |--------------------------------------------------------------------------
-    | Enable Two-Factor Authentication
-    |--------------------------------------------------------------------------
-    */
 
     public function enableTwoFactor(): void
     {
-        try {
+        $this->authorize('manageTwoFactor', $this->targetUser);
 
-            $this->enableTwoFactorUseCase->execute();
+        try {
+            // This UseCase currently acts on auth()->user().
+            // It must be updated to accept the target user.
+            $this->enableTwoFactorUseCase->execute($this->targetUser);
 
             unset(
-                $this->user,
+                $this->targetUser,
                 $this->isTwoFactorEnabled,
                 $this->isTwoFactorPending,
                 $this->qrCode
@@ -84,12 +79,12 @@ new #[Layout('layouts.dashboard')] #[Title('Two-Factor Authentication')] class e
                 'Two-factor authentication setup started successfully.'
             );
         } catch (\Throwable $exception) {
-
             $this->handleException($exception);
         }
     }
 };
 ?>
+
 
 <div>
 
@@ -166,18 +161,17 @@ new #[Layout('layouts.dashboard')] #[Title('Two-Factor Authentication')] class e
                 {{ session('success') }}
             </p>
 
-            @if (session('error'))
-            <div class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
-                <p class="text-sm font-medium text-red-700">
-                    {{ session('error') }}
-                </p>
-            </div>
-            @endif
 
         </div>
 
     </div>
-
+    @endif
+    @if (session('error'))
+    <div class="mb-6 rounded-xl border border-red-200 bg-red-50 p-4">
+        <p class="text-sm font-medium text-red-700">
+            {{ session('error') }}
+        </p>
+    </div>
     @endif
 
 
@@ -550,7 +544,7 @@ new #[Layout('layouts.dashboard')] #[Title('Two-Factor Authentication')] class e
                     </p>
 
                     <a
-                        href="{{ route('confirm-two-factor-authentication') }}"
+                        href="{{ route('users.confirm-two-factor-authentication', ['id' => $this->userId]) }}"
                         class="mt-4 inline-flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-700">
                         Continue to Confirmation
 

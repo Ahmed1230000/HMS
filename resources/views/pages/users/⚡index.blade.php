@@ -6,14 +6,21 @@ use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
 use App\Domains\User\UseCases\ListUsersUseCase\ListUsersUseCase;
 use Livewire\Attributes\Title;
+use Spatie\Permission\Models\Permission;
+use Spatie\Permission\Models\Role;
 
-new #[Layout('layouts.dashboard')] #[Title('User')] class extends Component
+new #[Layout('layouts.dashboard')] #[Title('Users')] class extends Component
 {
     protected ListUsersUseCase $listUsersUseCase;
 
     public function boot(ListUsersUseCase $listUsersUseCase): void
     {
         $this->listUsersUseCase = $listUsersUseCase;
+    }
+
+    public function mount(): void
+    {
+        $this->authorize('viewAny', \App\Models\User::class);
     }
 
     #[Computed]
@@ -45,6 +52,7 @@ new #[Layout('layouts.dashboard')] #[Title('User')] class extends Component
                 Manage all system users.
             </p>
         </div>
+        @can('store-user')
 
         <a
             href="{{ route('users.create') }}"
@@ -64,6 +72,7 @@ new #[Layout('layouts.dashboard')] #[Title('User')] class extends Component
 
             Create User
         </a>
+        @endcan
 
     </div>
 
@@ -354,6 +363,8 @@ new #[Layout('layouts.dashboard')] #[Title('User')] class extends Component
                             <div class="flex items-center justify-end gap-2">
 
                                 {{-- View --}}
+                                @can('show-user')
+
                                 <a
                                     href="{{ route('users.show', $user->id) }}"
                                     wire:navigate
@@ -377,9 +388,11 @@ new #[Layout('layouts.dashboard')] #[Title('User')] class extends Component
                                             d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
                                     </svg>
                                 </a>
-
+                                @endcan
 
                                 {{-- Roles --}}
+                                @can('manage-roles')
+
                                 <a
                                     href="{{ route('users.roles', $user->id) }}"
                                     wire:navigate
@@ -411,9 +424,11 @@ new #[Layout('layouts.dashboard')] #[Title('User')] class extends Component
                                             d="M19 8v6m3-3h-6" />
                                     </svg>
                                 </a>
+                                @endcan
 
 
                                 {{-- Permissions --}}
+                                @can('manage-permissions')
                                 <a
                                     href="{{ route('users.permissions', $user->id) }}"
                                     wire:navigate
@@ -437,14 +452,18 @@ new #[Layout('layouts.dashboard')] #[Title('User')] class extends Component
                                             d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09a1.65 1.65 0 00-1-1.51 1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 11-2.83-2.83l.06-.06A1.65 1.65 0 004.6 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 112.83-2.83l.06.06A1.65 1.65 0 009 4.6a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 112.83 2.83l-.06.06A1.65 1.65 0 0019.4 9c.14.58.63 1 1.22 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z" />
                                     </svg>
                                 </a>
+                                @endcan
 
 
                                 {{-- Delete --}}
+                                @can('delete-user')
+
                                 <div>
                                     <livewire:layouts.delete
                                         :user-id="$user->id"
                                         :key="'delete-user-'.$user->id" />
                                 </div>
+                                @endcan
 
                             </div>
 

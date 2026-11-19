@@ -3,6 +3,8 @@
 use App\Domains\User\DTOs\User\ConfirmTwoFactorDTO;
 use App\Domains\User\Exceptions\User\TwoFactorAuthenticationAlreadyEnabledException;
 use App\Domains\User\UseCases\ConfirmTwoFactorUseCase\ConfirmTwoFactorUseCase;
+use App\Models\User;
+use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -10,6 +12,8 @@ use Livewire\Component;
 new #[Layout('layouts.dashboard')] #[Title('Confirm Two-Factor Authentication')] class extends Component
 {
     public string $code = '';
+    public int $userId;
+
 
     protected ConfirmTwoFactorUseCase $confirmTwoFactorUseCase;
 
@@ -25,6 +29,19 @@ new #[Layout('layouts.dashboard')] #[Title('Confirm Two-Factor Authentication')]
         ];
     }
 
+    public function mount(int $id): void
+    {
+        $this->userId = $id;
+
+        $this->authorize('manageTwoFactor', $this->targetUser);
+    }
+
+    #[Computed]
+    public function targetUser()
+    {
+        return User::findOrFail($this->userId);
+    }
+
     public function confirm(): void
     {
         try {
@@ -34,7 +51,7 @@ new #[Layout('layouts.dashboard')] #[Title('Confirm Two-Factor Authentication')]
                 code: $validated['code'],
             );
 
-            $this->confirmTwoFactorUseCase->execute($dto);
+            $this->confirmTwoFactorUseCase->execute($this->targetUser, $dto);
 
             $this->reset('code');
 
@@ -45,18 +62,18 @@ new #[Layout('layouts.dashboard')] #[Title('Confirm Two-Factor Authentication')]
 
             $this->redirectRoute(
                 'users.two-factor-authentication',
-                ['id' => auth()->id()]
+                ['id' => $this->targetUser->id]
             );
         } catch (TwoFactorAuthenticationAlreadyEnabledException $exception) {
 
             session()->flash(
                 'error',
-                'Two-factor authentication is already enabled for your account.'
+                'Two-factor authentication is already enabled for this user.'
             );
 
             $this->redirectRoute(
                 'users.two-factor-authentication',
-                ['id' => auth()->id()]
+                ['id' => $this->targetUser->id]
             );
         }
     }
