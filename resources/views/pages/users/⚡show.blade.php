@@ -2,12 +2,14 @@
 
 use App\Domains\User\DTOs\User\ShowUserDTO;
 use App\Domains\User\UseCases\ShowUserUseCase\ShowUserUseCase;
+use App\Models\User;
+use Illuminate\Support\Facades\Gate;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 
-new #[Layout('layouts.dashboard')] #[Title('USer')] class extends Component
+new #[Layout('layouts.dashboard')] #[Title('User')] class extends Component
 {
 
     protected ShowUserUseCase $showUserUseCase;
@@ -22,10 +24,11 @@ new #[Layout('layouts.dashboard')] #[Title('USer')] class extends Component
     public function mount(int $id): void
     {
         $this->id = $id;
+        $this->authorize('view', $this->user);
     }
 
     #[Computed]
-    public function user()
+    public function user(): User
     {
         return $this->showUserUseCase->execute($this->id);
     }
@@ -180,6 +183,13 @@ new #[Layout('layouts.dashboard')] #[Title('USer')] class extends Component
                 Assign Roles
 
             </button>
+
+            <a
+                href="{{ route('users.two-factor-authentication', $this->user->id) }}"
+                wire:navigate
+                class="rounded-xl bg-indigo-600 px-6 py-3 font-medium text-white transition hover:bg-indigo-700">
+                Two-Factor Authentication
+            </a>
 
         </div>
 

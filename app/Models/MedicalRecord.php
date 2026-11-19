@@ -2,8 +2,10 @@
 
 namespace App\Models;
 
+use App\Domains\MedicalRecord\Database\Factories\MedicalRecordFactory;
 use App\Domains\MedicalRecord\Enums\MedicalRecordStatusEnum;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -18,8 +20,13 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 ])]
 class MedicalRecord extends Model
 {
-    use SoftDeletes;
+    use SoftDeletes, HasFactory;
     protected $table = 'medical_records';
+
+    protected static function newFactory()
+    {
+        return MedicalRecordFactory::new();
+    }
 
     protected $casts = [
         'status'         => MedicalRecordStatusEnum::class,

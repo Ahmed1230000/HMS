@@ -4,27 +4,29 @@ namespace Database\Seeders;
 
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
 class RoleAndPermissionSeeder extends Seeder
 {
+    use RefreshDatabase;
     /**
      * Available Roles
      */
     private array $roles = [
         'super_admin',
-        'admin',
-        'employee',
+        // 'admin',
+        // 'employee',
     ];
 
     /**
      * Modules
      */
     private array $permissions = [
-        'users',
-        'roles',
-        'permissions',
+        'user',
+        'role',
+        'permission',
     ];
 
     /**
@@ -33,15 +35,15 @@ class RoleAndPermissionSeeder extends Seeder
     private array $rolePermissions = [
         'super_admin' => ['*'],
 
-        'admin' => [
-            'users',
-            'roles',
-            'permissions',
-        ],
+        // 'admin' => [
+        //     'user',
+        //     'role',
+        //     'permission',
+        // ],
 
-        'employee' => [
-            'users',
-        ],
+        // 'employee' => [
+        //     'user',
+        // ],
     ];
 
     /**
@@ -76,6 +78,8 @@ class RoleAndPermissionSeeder extends Seeder
 
     private function createRoles(): void
     {
+        Role::whereNotIn('name', $this->roles)->where('guard_name', 'api')->delete();
+
         foreach ($this->roles as $role) {
 
             Role::firstOrCreate([
@@ -93,6 +97,8 @@ class RoleAndPermissionSeeder extends Seeder
 
     private function createPermissions(): void
     {
+        Permission::whereNotIn('name', $this->permissions)->where('guard_name', 'api')->delete();
+        
         foreach ($this->permissions as $module) {
 
             foreach ($this->actions as $action) {

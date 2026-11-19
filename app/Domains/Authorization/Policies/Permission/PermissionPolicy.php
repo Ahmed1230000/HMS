@@ -7,12 +7,19 @@ use App\Models\Permission;
 
 class PermissionPolicy
 {
+    public function before(User $user, $ability)
+    {
+        if ($user->hasRole('super_admin')) {
+            return true;
+        }
+        return null;
+    }
     /**
      * Determine whether any models can be viewed.
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo('index-permission');
     }
 
     /**
@@ -20,7 +27,7 @@ class PermissionPolicy
      */
     public function view(User $user ,Permission $permission): bool
     {
-        return true;
+        return $user->hasPermissionTo('show-permission');
     }
 
     /**
@@ -28,7 +35,7 @@ class PermissionPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasPermissionTo('store-permission');
     }
 
     /**
@@ -36,7 +43,7 @@ class PermissionPolicy
      */
     public function update(User $user, Permission $permission): bool
     {
-        return true;
+        return $user->hasPermissionTo('update-permission');
     }
 
     /**
@@ -44,7 +51,7 @@ class PermissionPolicy
      */
     public function delete(User $user, Permission $permission): bool
     {
-        return true;
+        return $user->hasPermissionTo('delete-permission');
     }
 
     /**

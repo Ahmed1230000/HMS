@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
             EmployeeSeeder::class,
             PatientSeeder::class,
             AppointmentSeeder::class,
-            MedicalRecordSeeder::class,
+            // MedicalRecordSeeder::class,
             PrescriptionSeeder::class,
             PrescriptionItemSeeder::class,
             MedicineSeeder::class,
