@@ -19,6 +19,7 @@ use App\Domains\Employee\Database\Seeders\EmployeeSeeder;
 use App\Domains\Doctor\Database\Seeders\DoctorSeeder;
 use App\Domains\Hr\Database\Seeders\HrSeeder;
 use App\Domains\Department\Database\Seeders\DepartmentSeeder;
+use App\Domains\User\Database\Seeders\SuperAdminSeeder;
 use App\Domains\User\Database\Seeders\UserSeeder;
 
 class DatabaseSeeder extends Seeder
@@ -32,6 +33,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call([
             // UserSeeder::class,
+            SuperAdminSeeder::class,
             RoleAndPermissionSeeder::class,
             // DepartmentSeeder::class,
             // HrSeeder::class,
