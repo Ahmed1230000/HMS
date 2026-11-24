@@ -10,6 +10,7 @@ use Spatie\Permission\Models\Role;
 
 class RoleAndPermissionSeeder extends Seeder
 {
+    use RefreshDatabase;
     /**
      * Available Roles
      */
