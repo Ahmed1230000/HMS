@@ -16,8 +16,11 @@ class RoleAndPermissionSeeder extends Seeder
      */
     private array $roles = [
         'super_admin',
-        // 'admin',
-        // 'employee',
+    ];
+
+    private array $SuperAdminPermissions = [
+        'manage-roles',
+        'manage-permissions',
     ];
 
     /**
@@ -53,6 +56,8 @@ class RoleAndPermissionSeeder extends Seeder
 
         $this->createPermissions();
 
+        $this->superAdminPermissions();
+
         $this->syncRolePermissions();
 
         $this->assignSuperAdminRole();
@@ -63,6 +68,17 @@ class RoleAndPermissionSeeder extends Seeder
      * Roles
      * --------------------------------------------------------------------------
      */
+
+    private function superAdminPermissions(): void
+    {
+        foreach ($this->SuperAdminPermissions as $permission) {
+
+            Permission::firstOrCreate([
+                'name'       => strtolower($permission),
+                'guard_name' => 'api',
+            ]);
+        }
+    }
 
     private function createRoles(): void
     {
@@ -83,7 +99,6 @@ class RoleAndPermissionSeeder extends Seeder
 
     private function createPermissions(): void
     {
-
         foreach ($this->permissions as $module) {
 
             foreach ($this->actions as $action) {
