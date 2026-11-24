@@ -34,16 +34,6 @@ class RoleAndPermissionSeeder extends Seeder
      */
     private array $rolePermissions = [
         'super_admin' => ['*'],
-
-        // 'admin' => [
-        //     'user',
-        //     'role',
-        //     'permission',
-        // ],
-
-        // 'employee' => [
-        //     'user',
-        // ],
     ];
 
     /**
@@ -66,8 +56,6 @@ class RoleAndPermissionSeeder extends Seeder
         $this->syncRolePermissions();
 
         $this->assignSuperAdminRole();
-
-        // $this->assignPermissionToUser();
     }
 
     /**
@@ -78,8 +66,6 @@ class RoleAndPermissionSeeder extends Seeder
 
     private function createRoles(): void
     {
-        Role::whereNotIn('name', $this->roles)->where('guard_name', 'api')->delete();
-
         foreach ($this->roles as $role) {
 
             Role::firstOrCreate([
@@ -97,8 +83,7 @@ class RoleAndPermissionSeeder extends Seeder
 
     private function createPermissions(): void
     {
-        Permission::whereNotIn('name', $this->permissions)->where('guard_name', 'api')->delete();
-        
+
         foreach ($this->permissions as $module) {
 
             foreach ($this->actions as $action) {
@@ -135,7 +120,9 @@ class RoleAndPermissionSeeder extends Seeder
 
             if (in_array('*', $modules)) {
 
-                $role->syncPermissions(Permission::all());
+                $role->givePermissionTo(
+                    Permission::where('guard_name', 'api')->get()
+                );
 
                 continue;
             }
@@ -156,7 +143,7 @@ class RoleAndPermissionSeeder extends Seeder
                 }
             }
 
-            $role->syncPermissions($permissions);
+            $role->givePermissionsTo($permissions);
         }
     }
 
@@ -174,24 +161,6 @@ class RoleAndPermissionSeeder extends Seeder
             return;
         }
 
-        $user->syncRoles('super_admin');
-    }
-
-    /**
-     * --------------------------------------------------------------------------
-     * Assign Permission To User
-     * --------------------------------------------------------------------------
-     */
-
-    public function assignPermissionToUser(): void
-    {
-        $permission = Permission::where('name', Permission::all()->select('name'))->first();
-
-
-        $user = User::where('email', 'super_admin@gmail.com')->first();
-
-        if ($permission) {
-            $user->syncPermissions([$permission]);
-        }
+        $user->assignRole('super_admin');
     }
 }

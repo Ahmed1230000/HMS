@@ -31,23 +31,23 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            UserSeeder::class,
+            // UserSeeder::class,
             RoleAndPermissionSeeder::class,
-            DepartmentSeeder::class,
-            HrSeeder::class,
-            DoctorSeeder::class,
-            EmployeeSeeder::class,
-            PatientSeeder::class,
-            AppointmentSeeder::class,
+            // DepartmentSeeder::class,
+            // HrSeeder::class,
+            // DoctorSeeder::class,
+            // EmployeeSeeder::class,
+            // PatientSeeder::class,
+            // AppointmentSeeder::class,
             // MedicalRecordSeeder::class,
-            PrescriptionSeeder::class,
-            PrescriptionItemSeeder::class,
-            MedicineSeeder::class,
-            RequestSeeder::class,
-            MedicineItemSeeder::class,
-            InvoiceSeeder::class,
-            InvoiceItemSeeder::class,
-            PaymentSeeder::class,
+            // PrescriptionSeeder::class,
+            // PrescriptionItemSeeder::class,
+            // MedicineSeeder::class,
+            // RequestSeeder::class,
+            // MedicineItemSeeder::class,
+            // InvoiceSeeder::class,
+            // InvoiceItemSeeder::class,
+            // PaymentSeeder::class,
         ]);
     }
 }
